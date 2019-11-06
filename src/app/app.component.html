@@ -1,50 +1,67 @@
-
-
 <mat-sidenav-container class="example-container" >
-  <mat-sidenav #sidenav mode="side" [(opened)]="opened" class="sidebar-container" >
-   <h1> Transactions History</h1>
-   <ul *ngFor = "let data of data">
-     <li><strong>Loan Amount</strong> {{data.loanAmount}}</li>
-     <li> <strong>Loan Duration</strong> {{data.loanDuration}}</li>
-   </ul>
-  </mat-sidenav>
+ 
+    <mat-sidenav #sidenav mode="side" [(opened)]="opened" class="sidebar-container" >
+      <h1> Transactions History</h1>
+      <ul *ngFor = "let data of historyData">
+        <li><strong>Loan Amount :</strong> {{data.loanAmount | currency}}</li>
+        <li> <strong>Loan Duration :</strong> {{data.loanDuration}} months</li>
+      </ul>
+    </mat-sidenav>
+  
   <mat-card >
-    <mat-card-content class="mat-elevation-z8">
-      <h2 class="example-h2">Slider configuration </h2>
+    <mat-card-content >
+      <h2 class="example-h2"> Loan Details</h2>
       <section class="example-section">
         <mat-form-field class="form-element">
-          <input matInput type="number" placeholder="Loan Amount (USD)" [(ngModel)]="value" #amount="ngModel">
+          <input matInput type="text" placeholder="Loan Amount (USD)" [(ngModel)]="value" required #amount="ngModel">
         </mat-form-field>
-        <mat-error *ngIf="amount.touched && value < min">Please enter above {{min}}</mat-error>
-        <mat-error *ngIf="amount.touched && value > max" >Please enter valid withdraw amount </mat-error>
+        <mat-error class="example-margin" *ngIf="amount.touched && value < min">Please enter above {{min}}</mat-error>
+        <mat-error class="example-margin" *ngIf="amount.touched && value > max" >Please enter below {{max}} </mat-error>
 
         <mat-form-field class="form-element">
-          <input matInput type="number" placeholder="Loan Duration (Months)" [(ngModel)]="duration" #Duration = "ngModel" >
+          <input matInput type="text" placeholder="Loan Duration (Months)" [(ngModel)]="duration" required #Duration = "ngModel" >
         </mat-form-field>
-        <mat-error   class="example-margin" *ngIf="Duration.touched && duration < 6" >Please enter above {{min}}</mat-error>
-        <mat-error class="example-margin" *ngIf="Duration.touched && value > duration > 24">Please enter valid withdraw amount </mat-error>
-        <button  class="example-margin" mat-raised-button  color="primary" (click) ="getInterestRate()">Get Interest Rate</button>
+        <mat-error class="example-margin" *ngIf="Duration.touched && duration < 6" >Please enter duration above 6 months</mat-error>
+        <mat-error class="example-margin" *ngIf="Duration.touched && duration > 24">Please enter duration must be below 24 months </mat-error>
+
+
+        <mat-error class="example-margin">{{errorMessage}}</mat-error>
+        <button  class="button-css" mat-raised-button  color="primary" (click) ="getInterestRate()" >Get Interest Rate</button>
       </section>
   
       <section *ngIf="showInterestDetails">
-        <ul>
-          <li>  Interest Rate: {{(interestDetails.interestRate)| percent }} </li>
-          <li>  Monthly Payment: {{(interestDetails.monthlyPayment.amount | currency)}}</li>
-          <li>  Number of Payment: {{(interestDetails.numPayments )}}</li>
-          <li>  Principal Amount: {{(interestDetails.principal.amount | currency)}}</li>
+        <h2 class="example-h2"> Interest Details</h2>
+        <div>
+        <ul class="interest-css" >
+          <li> <strong>Interest Rate:</strong>  {{(interestDetails.interestRate)| percent }} </li>
+          <li> <strong>Monthly Payment:</strong> {{(interestDetails.monthlyPayment.amount | currency)}}</li>
+          <li> <strong>Number of Payments:</strong>  {{(interestDetails.numPayments )}}</li>
+          <li> <strong> Principal Amount:</strong> {{(interestDetails.principal.amount | currency)}}</li>
         </ul>
+      </div>
       </section>
 
-      <mat-card class="result">
-          <mat-card-content>
-            <h2 class="example-h2">Result</h2>
-        
+      <mat-card >
+          <mat-card-content >
+            <h2 class="example-h2"> Slider Configuration</h2>
+            <div class="slider-info">
+            <mat-label>Slider For Loan Amount : </mat-label>
             <mat-slider
-                class="example-margin"
+                [title] ="value"
                 [max]="max"
                 [min]="min"
                 [(ngModel)]="value">
             </mat-slider>
+          </div>
+          <div class="slider-info">
+            <mat-label>Slider For Loan Duration:</mat-label>
+            <mat-slider
+            [title] ="duration"
+            [max]="24"
+            [min]="6"
+            [(ngModel)]="duration">
+        </mat-slider>
+      </div>
           </mat-card-content>
         </mat-card>
     </mat-card-content>
